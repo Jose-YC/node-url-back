@@ -1,0 +1,116 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model user {
+  id         Int    @id @default(autoincrement())
+  name       String    @db.VarChar(30)
+  email      String    @unique @db.VarChar(255)
+  password   String    @db.VarChar(255)
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  roles       user_role[]
+  group       group[]
+  url         url[]
+}
+
+model permission {
+  id          Int    @id @default(autoincrement())
+  name        String    @unique @db.VarChar(100)
+  description String?
+  module      String?   @db.VarChar(50)
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+  deleted_at  DateTime?
+
+  roles       role_permission[]
+}
+
+model role {
+  id          Int    @id @default(autoincrement())
+  name        String    @unique @db.VarChar(100)
+  description String?
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+  deleted_at  DateTime?
+
+  users       user_role[]
+  permissions role_permission[]
+}
+
+model user_role {
+  id         Int    @id @default(autoincrement())
+  user_id    Int
+  role_id    Int
+  created_at DateTime  @default(now())
+  deleted_at DateTime?
+
+  user       user      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  role       role      @relation(fields: [role_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, role_id], name: "unique_user_role")
+}
+
+model role_permission {
+  id            Int    @id @default(autoincrement())
+  role_id       Int
+  permission_id Int
+  created_at    DateTime  @default(now())
+  deleted_at    DateTime?
+
+  role          role       @relation(fields: [role_id], references: [id], onDelete: Cascade)
+  permission    permission @relation(fields: [permission_id], references: [id], onDelete: Cascade)
+
+  @@unique([role_id, permission_id], name: "unique_role_permission")
+}
+
+model group {
+  id            Int       @id @default(autoincrement())
+  name          String    
+
+  user_id         Int    
+  user           user     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  state         Boolean   @default(true)
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  url url[]
+}
+
+model url {
+  id             Int       @id @default(autoincrement())
+  short_url      String    @unique
+  original_url   String    
+  password       String     
+  title          String     
+  statistic      Boolean   @default(false)
+  is_favorite    Boolean   @default(false)
+
+  user_id         Int    
+  user           user       @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  group_id        Int?    
+  group          group?       @relation(fields: [group_id], references: [id], onDelete: Cascade)
+
+  state          Boolean   @default(true)
+  
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  // statistics    statistics[]
+}
