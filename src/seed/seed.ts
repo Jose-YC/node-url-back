@@ -6,7 +6,7 @@ async function main() {
   console.log('🌱 Iniciando seed...');
 
   // Limpiar datos existentes y reiniciar secuencias de IDs
-  await prisma.$executeRaw`TRUNCATE TABLE role_permission, user_role, permission, role, "user" RESTART IDENTITY CASCADE`;
+  await prisma.$executeRaw`TRUNCATE TABLE role_permission, user_role, permission, role, "group", "user" RESTART IDENTITY CASCADE`;
 
   console.log('✨ Datos anteriores eliminados y secuencias reiniciadas');
 
@@ -205,11 +205,91 @@ async function main() {
 
   console.log('✅ Roles asignados a usuarios');
 
+  // 6. Crear Grupos
+  console.log('📁 Creando grupos...');
+  const groups = await Promise.all([
+    // Grupos del Admin
+    prisma.group.create({
+      data: {
+        name: 'Trabajo',
+        description: 'URLs relacionadas con el trabajo y proyectos laborales',
+        user_id: userAdmin.id,
+      },
+    }),
+    prisma.group.create({
+      data: {
+        name: 'Personal',
+        description: 'Enlaces personales y de uso cotidiano',
+        user_id: userAdmin.id,
+      },
+    }),
+    prisma.group.create({
+      data: {
+        name: 'Redes Sociales',
+        description: 'URLs de perfiles y páginas en redes sociales',
+        user_id: userAdmin.id,
+      },
+    }),
+    prisma.group.create({
+      data: {
+        name: 'Desarrollo',
+        description: 'Recursos y herramientas para desarrollo de software',
+        user_id: userAdmin.id,
+      },
+    }),
+    prisma.group.create({
+      data: {
+        name: 'Educación',
+        description: 'Cursos, tutoriales y material educativo',
+        user_id: userAdmin.id,
+      },
+    }),
+    // Grupos del Usuario Básico
+    prisma.group.create({
+      data: {
+        name: 'Marketing',
+        description: 'Campañas y materiales de marketing digital',
+        user_id: userBasic.id,
+      },
+    }),
+    prisma.group.create({
+      data: {
+        name: 'Documentación',
+        description: 'Documentos importantes y referencias técnicas',
+        user_id: userBasic.id,
+      },
+    }),
+    prisma.group.create({
+      data: {
+        name: 'Clientes',
+        description: 'URLs compartidas con clientes y socios comerciales',
+        user_id: userBasic.id,
+      },
+    }),
+    prisma.group.create({
+      data: {
+        name: 'Proyectos',
+        description: 'Proyectos personales y colaborativos',
+        user_id: userBasic.id,
+      },
+    }),
+    prisma.group.create({
+      data: {
+        name: 'Temporales',
+        description: 'Enlaces de uso temporal o de corta duración',
+        user_id: userBasic.id,
+      },
+    }),
+  ]);
+
+  console.log(`✅ ${groups.length} grupos creados`);
+
   console.log('\n🎉 Seed completado exitosamente!\n');
   console.log('📊 Resumen:');
   console.log(`   - ${permissions.length} permisos creados`);
   console.log(`   - 2 roles creados (user, admin)`);
   console.log(`   - 2 usuarios creados`);
+  console.log(`   - ${groups.length} grupos creados`);
   console.log(`   - Rol "admin" tiene todos los permisos`);
   console.log(`   - Rol "user" sin permisos\n`);
   console.log('👤 Credenciales:');
