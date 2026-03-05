@@ -80,6 +80,7 @@ model role_permission {
 model group {
   id            Int       @id @default(autoincrement())
   name          String    
+  description   String? 
 
   user_id         Int    
   user           user     @relation(fields: [user_id], references: [id], onDelete: Cascade)
