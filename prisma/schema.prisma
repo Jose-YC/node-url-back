@@ -85,8 +85,8 @@ model group {
   user_id         Int    
   user           user     @relation(fields: [user_id], references: [id], onDelete: Cascade)
   
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  created_at     DateTime  @default(now())
+  updated_at     DateTime  @updatedAt
   deleted_at    DateTime?
 
   url url[]
@@ -107,8 +107,8 @@ model url {
   group_id        Int?    
   group          group?       @relation(fields: [group_id], references: [id], onDelete: Cascade)
   
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
   deleted_at    DateTime?
   // statistics    statistics[]
 }

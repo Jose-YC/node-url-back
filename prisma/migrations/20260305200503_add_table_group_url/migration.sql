@@ -4,8 +4,8 @@ CREATE TABLE "group" (
     "name" TEXT NOT NULL,
     "description" TEXT,
     "user_id" INTEGER NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
     "deleted_at" TIMESTAMP(3),
 
     CONSTRAINT "group_pkey" PRIMARY KEY ("id")
@@ -22,8 +22,8 @@ CREATE TABLE "url" (
     "is_favorite" BOOLEAN NOT NULL DEFAULT false,
     "user_id" INTEGER NOT NULL,
     "group_id" INTEGER,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
     "deleted_at" TIMESTAMP(3),
 
     CONSTRAINT "url_pkey" PRIMARY KEY ("id")
