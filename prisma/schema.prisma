@@ -95,11 +95,12 @@ model group {
 model url {
   id             Int       @id @default(autoincrement())
   short_url      String    @unique
-  original_url   String    
-  password       String     
-  title          String     
+  original_url   String   
+  isPublic       Boolean  @default(true) 
   statistic      Boolean   @default(false)
   is_favorite    Boolean   @default(false)
+  title          String?     
+  password       String?     
 
   user_id         Int    
   user           user       @relation(fields: [user_id], references: [id], onDelete: Cascade)
