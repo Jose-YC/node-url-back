@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { AuthRoutes, GroupRoutes, PermissionRoutes, RolRoutes, UserRoutes } from "../modules";
+import { UrlRoutes, AuthRoutes, GroupRoutes, PermissionRoutes, RolRoutes, UserRoutes } from "../modules";
 
 export class AppRoutes {
 
@@ -11,6 +11,7 @@ export class AppRoutes {
         router.use('/permission', PermissionRoutes.routes);
 
         router.use('/group', GroupRoutes.routes);
+        router.use('/url', UrlRoutes.routes);
 
         return router;
     }
