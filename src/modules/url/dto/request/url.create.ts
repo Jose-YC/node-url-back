@@ -4,29 +4,33 @@ export class CreateUrlDtos {
     private constructor(
         public readonly original_url:string,
         public readonly short_url:string,
-        public readonly user_id:number,
+        public readonly user_id?:number,
         public readonly isPublic?:boolean,
         public readonly is_favorite?:boolean,
         public readonly statistic?:boolean,
         public readonly password?:string,
         public readonly title?:string,
         public readonly group_id?:number,
+        public readonly expires_at?:boolean,
     ){}
 
     static create(props: {[key:string]:any}): [string?, CreateUrlDtos?]{
-        const { original, userid, visibility, statistic, password, title, groupid, favorite, code } = props;
+        const { original, userid, visibility, statistic, password, title, groupid, favorite, code, expiration } = props;
 
+        if (userid === undefined && (visibility !== undefined || statistic !== undefined || password !== undefined || groupid !== undefined)) {
+            return ['To access more features, you must log in'];
+        }
+        
         if (typeof original !== 'string') return ['Missing or invalid original url'];
         if (!original || !original.trim()) return ['Original url cannot be empty'];
 
         if (typeof code !== 'string') return ['Missing or invalid short code'];
         if (!code || !code.trim()) return ['Short code cannot be empty'];
 
-        if (!original || !original.trim()) return ['Original url cannot be empty'];
-
-
-        if (!Number.isInteger(userid)) return ['User id must be an integer'];
-        if (userid <= 0) return ['User id must be a positive integer'];
+        if (userid !== undefined) {
+            if (!Number.isInteger(userid)) return ['User id must be an integer'];
+            if (userid <= 0) return ['User id must be a positive integer'];
+        }
 
         if (visibility !== undefined )
             if (typeof visibility !== 'boolean') return ['Visibility must be a boolean'];
@@ -36,6 +40,9 @@ export class CreateUrlDtos {
 
         if (statistic !== undefined )
             if (typeof statistic !== 'boolean') return ['Statistic must be a boolean'];
+
+        if (expiration !== undefined )
+            if (typeof expiration !== 'boolean') return ['Expiration must be a boolean'];
 
         if (visibility === false) {
             if (typeof password !== 'string') return ['Invalid password format'];
@@ -56,6 +63,6 @@ export class CreateUrlDtos {
             if (groupid <= 0) return ['Group id must be a positive integer'];
         }
 
-        return [undefined, new CreateUrlDtos(original.trim(), code.trim(), userid, visibility, statistic, password, title, groupid, favorite)];
+        return [undefined, new CreateUrlDtos(original.trim(), code.trim(), userid, visibility, favorite, statistic, password, title, groupid, expiration)];
     }
 }

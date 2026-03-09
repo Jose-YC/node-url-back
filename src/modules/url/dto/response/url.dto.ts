@@ -12,10 +12,11 @@ export class URL {
         public readonly group_name: string,
         public readonly group_id?: string,
         public readonly title?:string,
+        public readonly expires_at?:Date,
     ){}
 
     static fromObject(props: {[key:string]:any}): URL {
-        const { id, original_url, short_url, isPublic, statistic, title, group_name, group_id, is_favorite } = props;
+        const { id, original_url, short_url, isPublic, statistic, title, group_name, group_id, is_favorite, expires_at } = props;
         
         if (!Number.isInteger(id)) throw CustomError.badRequest('Id must be an integer');
         if (id <= 0) throw CustomError.badRequest('Id must be a positive integer');
@@ -42,6 +43,12 @@ export class URL {
             if (!Number.isInteger(group_id)) throw CustomError.badRequest('Group id must be an integer');
             if (group_id <= 0) throw CustomError.badRequest('Group id must be a positive integer');
         }
-        return new URL(id, original_url, short_url, isPublic, is_favorite, statistic, group_name, group_id, title);
+
+        if (expires_at !== undefined && expires_at !== null) {
+            if (!(expires_at instanceof Date) && typeof expires_at !== 'string') 
+                throw CustomError.badRequest('Invalid expires at format');
+        }
+
+        return new URL(id, original_url, short_url, isPublic, is_favorite, statistic, group_name, group_id, title, expires_at ? new Date(expires_at) : undefined);
     }
 }
