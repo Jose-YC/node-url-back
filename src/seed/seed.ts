@@ -852,6 +852,84 @@ async function main() {
 
   console.log(`✅ ${userUrls.length} URLs creadas para el usuario Básico`);
 
+  // 9. Crear URLs temporales sin usuario (expiradas)
+  console.log('⏰ Creando URLs temporales expiradas...');
+  
+  const expiredUrls = await Promise.all(
+    Array.from({ length: 10 }, (_, i) => {
+      const daysAgo = i + 1; // Expiradas hace 1 a 10 días
+      const expirationDate = new Date();
+      expirationDate.setDate(expirationDate.getDate() - daysAgo);
+      
+      return prisma.url.create({
+        data: {
+          short_url: `exp${i + 1}`,
+          original_url: [
+            'https://www.eventbrite.com/e/tech-conference-2026-tickets-123456789',
+            'https://docs.google.com/document/d/1a2b3c4d5e6f7g8h9i0j/edit',
+            'https://www.amazon.com/gp/promotion/details/A1B2C3D4E5F6G',
+            'https://forms.gle/Ab1Cd2Ef3Gh4Ij5Kl6',
+            'https://zoom.us/webinar/register/WN_AbCdEfGhIjK',
+            'https://drive.google.com/file/d/1aBcDeFgHiJkLmNoPqRsTuVwXyZ/view',
+            'https://www.groupon.com/deals/limited-time-offer-xyz123',
+            'https://app.testflight.apple.com/join/AbCdEfGh',
+            'https://www.ticketmaster.com/event/1A2B3C4D5E6F7G8H',
+            'https://share.streamlit.io/username/app-preview/main',
+          ][i % 10],
+          title: null,
+          is_favorite: false,
+          isPublic: true,
+          statistic: false,
+          password: null,
+          user_id: null,
+          group_id: null,
+          expires_at: expirationDate,
+        },
+      });
+    })
+  );
+
+  console.log(`✅ ${expiredUrls.length} URLs temporales expiradas creadas`);
+
+  // 10. Crear URLs temporales sin usuario (activas, expiran en el futuro)
+  console.log('⏰ Creando URLs temporales activas...');
+  
+  const activeTemporaryUrls = await Promise.all(
+    Array.from({ length: 10 }, (_, i) => {
+      const daysUntilExpiration = i + 1; // Expiran en 1 a 10 días
+      const expirationDate = new Date();
+      expirationDate.setDate(expirationDate.getDate() + daysUntilExpiration);
+      
+      return prisma.url.create({
+        data: {
+          short_url: `tmp${i + 1}`,
+          original_url: [
+            'https://www.meetup.com/es/tech-meetup-madrid/events/298765432/',
+            'https://docs.google.com/presentation/d/1zYxWvUtSrQpOnMlKjIhGfEdCbA/edit',
+            'https://www.udemy.com/course/web-development-bootcamp/?couponCode=SPRING2026',
+            'https://www.surveymonkey.com/r/ABCD1234',
+            'https://zoom.us/j/123456789?pwd=aBcDeFgHiJkLmNoPqRsTuVwXyZ',
+            'https://wetransfer.com/downloads/a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6/abcdef',
+            'https://www.bestbuy.com/site/flash-sale-electronics/pcmcat12345.c',
+            'https://beta.openai.com/signup?invite=abc123def456',
+            'https://www.eventbrite.com/e/developer-summit-2026-tickets-987654321',
+            'https://codesandbox.io/s/react-demo-preview-abc123',
+          ][i % 10],
+          title: null,
+          is_favorite: false,
+          isPublic: true,
+          statistic: false,
+          password: null,
+          user_id: null,
+          group_id: null,
+          expires_at: expirationDate,
+        },
+      });
+    })
+  );
+
+  console.log(`✅ ${activeTemporaryUrls.length} URLs temporales activas creadas`);
+
   console.log('\n🎉 Seed completado exitosamente!\n');
   console.log('📊 Resumen:');
   console.log(`   - ${permissions.length} permisos creados`);
@@ -860,7 +938,9 @@ async function main() {
   console.log(`   - ${groups.length} grupos creados`);
   console.log(`   - ${adminUrls.length} URLs creadas para Admin`);
   console.log(`   - ${userUrls.length} URLs creadas para Usuario Básico`);
-  console.log(`   - Total de URLs: ${adminUrls.length + userUrls.length}`);
+  console.log(`   - ${expiredUrls.length} URLs temporales expiradas`);
+  console.log(`   - ${activeTemporaryUrls.length} URLs temporales activas`);
+  console.log(`   - Total de URLs: ${adminUrls.length + userUrls.length + expiredUrls.length + activeTemporaryUrls.length}`);
   console.log(`   - Rol "admin" tiene todos los permisos`);
   console.log(`   - Rol "user" sin permisos\n`);
   console.log('👤 Credenciales:');
