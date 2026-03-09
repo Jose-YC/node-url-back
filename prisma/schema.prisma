@@ -101,9 +101,10 @@ model url {
   is_favorite    Boolean   @default(false)
   title          String?     
   password       String?     
+  expires_at     DateTime?
 
-  user_id         Int    
-  user           user       @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id         Int?    
+  user           user?       @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   group_id        Int?    
   group          group?       @relation(fields: [group_id], references: [id], onDelete: Cascade)

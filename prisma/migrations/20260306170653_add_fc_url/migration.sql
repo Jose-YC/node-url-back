@@ -15,7 +15,8 @@ RETURNS TABLE (
     group_name TEXT,
     "isPublic" BOOLEAN,
     is_favorite BOOLEAN,
-    statistic BOOLEAN
+    statistic BOOLEAN,
+    expires_at TIMESTAMP
 ) 
 LANGUAGE sql
 AS $$
@@ -27,7 +28,8 @@ AS $$
         COALESCE(G.name, 'No group') AS group_name,
         U."isPublic",
         U."is_favorite",
-        U."statistic"
+        U."statistic",
+        U."expires_at"
     FROM url U
     LEFT JOIN "group" G
         ON U.group_id = G.id AND G.deleted_at IS NULL
@@ -91,7 +93,8 @@ RETURNS TABLE (
     group_name TEXT,
     "isPublic" BOOLEAN,
     is_favorite BOOLEAN,
-    statistic BOOLEAN
+    statistic BOOLEAN,
+    expires_at TIMESTAMP
 )  
 LANGUAGE sql
 AS $$
@@ -104,7 +107,8 @@ AS $$
         COALESCE(G.name, 'No group') AS group_name,
         U."isPublic",
         U."is_favorite",
-        U."statistic"
+        U."statistic",
+        U."expires_at"
 	FROM "url" AS U
     LEFT JOIN "group" G ON U.group_id = G.id AND G.deleted_at IS NULL
 	WHERE U.deleted_at IS NULL

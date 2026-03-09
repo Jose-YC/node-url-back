@@ -1,18 +1,19 @@
 CREATE OR REPLACE PROCEDURE sp_CreateUrl(
-    p_user_id INTEGER,
     p_group_id INTEGER,
     p_url_original TEXT,
     p_url_short VARCHAR(30),
+    p_user_id INTEGER DEFAULT NULL,
     p_url_public BOOLEAN DEFAULT TRUE,
     p_url_favorite BOOLEAN DEFAULT FALSE,
     p_url_statistic BOOLEAN DEFAULT FALSE,
     p_url_title VARCHAR(30) DEFAULT NULL,
-    p_url_password TEXT DEFAULT NULL
+    p_url_password TEXT DEFAULT NULL,
+    p_url_expires_at BOOLEAN DEFAULT NULL
 )
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    INSERT INTO "url" ("original_url", "short_url", "isPublic", "is_favorite", "statistic", "title", "password", "user_id", "group_id", "updated_at") 
+    INSERT INTO "url" ("original_url", "short_url", "isPublic", "is_favorite", "statistic", "title", "password", "user_id", "group_id", "expires_at", "updated_at") 
     VALUES (
         p_url_original,
         p_url_short,
@@ -23,6 +24,10 @@ BEGIN
         p_url_password,
         p_user_id,
         p_group_id,
+        CASE 
+            WHEN p_url_expires_at = TRUE THEN NOW() + INTERVAL '15 days'
+            ELSE NULL
+        END,
         NOW()
     );
 EXCEPTION
