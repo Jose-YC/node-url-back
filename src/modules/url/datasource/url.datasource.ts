@@ -24,10 +24,10 @@ export class UrlDatasource {
 
         const url = await prisma.$queryRaw`
             CALL sp_CreateUrl(
-            p_user_id := ${createUrl.user_id}::INTEGER,
             p_group_id := ${createUrl.group_id}::INTEGER,
             p_url_original := ${createUrl.original_url}::TEXT,
             p_url_short := ${createUrl.short_url}::VARCHAR(30),
+            p_user_id := ${createUrl.user_id}::INTEGER,
             p_url_public := ${createUrl.isPublic}::BOOLEAN,
             p_url_favorite := ${createUrl.is_favorite}::BOOLEAN,
             p_url_statistic := ${createUrl.statistic}::BOOLEAN,
@@ -82,10 +82,12 @@ export class UrlDatasource {
                 original_url: true,
                 short_url: true,
                 isPublic: true,
+                expires_at: true,
             }
         });
 
         if (!url) throw CustomError.badRequest('This url does not exist');
+        if (url.expires_at && url.expires_at < new Date()) throw CustomError.badRequest('This url has expired');
         if (url.isPublic === true) return Short.fromObject(url);
         
         return Short.fromObject({id: url.id, short_url: url.short_url, isPublic: false});

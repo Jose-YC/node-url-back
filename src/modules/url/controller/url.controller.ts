@@ -9,11 +9,9 @@ export class UrlController {
 
     public post = catchAsync((req:Request, res:Response) =>  {
         const userid  = userContextManager.getValue('id');
-        if (!userid) throw CustomError.unAuthorized("Not logged in");
-
         const code =  ToBase62.convert(snowflakeGenerator.generateId());
 
-        const [ error, createUrlDtos ] = CreateUrlDtos.create({ ...req.body, userid, code });
+        const [ error, createUrlDtos ] = CreateUrlDtos.create({ ...req.body, userid, code, expires_at: !!userid});
         if (error) throw CustomError.badRequest(error);
 
         new UrlDatasource().create(createUrlDtos!)
