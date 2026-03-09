@@ -34,9 +34,9 @@ class UserContextManager {
     return context?.id ?? null;
   }
 
-  public getValue<K extends keyof UserPermissions>(key: K): UserPermissions[K] | null {
+  public getValue<K extends keyof UserPermissions>(key: K): UserPermissions[K] | undefined {
     const context = this.getContext();
-    return context?.[key] ?? null;
+    return context?.[key] ?? undefined;
   }
 }
 
