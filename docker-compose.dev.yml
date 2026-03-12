@@ -1,4 +1,4 @@
-# solo para desarrollo, no usar en producción
+# Solo para desarrollo, no usar en producción
 services:
   postgres-db:
     container_name: postgres-db
@@ -10,6 +10,8 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - ./postgres:/var/lib/postgresql/data
+    networks:
+      - url-back-dev-network
     ports:
       - 5432:5432
   
@@ -24,5 +26,11 @@ services:
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     volumes:
       - ./pgadmin:/var/lib/pgadmin
+    networks:
+      - url-back-dev-network
     ports:
       - 8080:80
+
+networks:
+  url-back-dev-network:
+    driver: bridge

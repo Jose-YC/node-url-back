@@ -35,6 +35,8 @@ COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/package.json ./
 COPY --from=builder /app/prisma.config.ts ./
 
+RUN chown -R node:node /app
+
 ENV NODE_ENV=production
 
 USER node
