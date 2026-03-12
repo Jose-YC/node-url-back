@@ -175,12 +175,70 @@ url-back/
 
 ### Requisitos Previos
 
+#### Opción 1: Con Docker (Recomendado)
+- **Docker**: >= 20.x
+- **Docker Compose**: >= 2.x
+
+#### Opción 2: Sin Docker
 - **Node.js**: >= 18.x
 - **pnpm**: >= 10.x
 - **PostgreSQL**: >= 15.x
-- **Docker** (opcional): Para desarrollo local
 
 ### Instalación
+
+#### 🐳 Instalación con Docker (Recomendado)
+
+1. **Clonar el repositorio**
+```bash
+git clone https://github.com/Jose-YC/node-url-back.git
+cd url-back
+```
+
+2. **Configurar variables de entorno**
+
+Crear un archivo `.env` en la raíz del proyecto:
+
+```env
+# Entorno
+NODE_ENV=production
+
+# Servidor
+PORT=3000
+
+# Base de datos
+POSTGRES_USER=usuario
+POSTGRES_PASSWORD=contraseña
+POSTGRES_DB=url_db
+DATABASE_URL="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}"
+
+# Generación de IDs
+MACHINE_ID=1
+
+# JWT
+JWT_SECRET=tu_clave_secreta_muy_segura_aqui
+
+# PgAdmin (opcional)
+PGADMIN_DEFAULT_EMAIL=admin@admin.com
+PGADMIN_DEFAULT_PASSWORD=admin
+```
+
+**Importante**: Cada instancia/servidor debe tener un `MACHINE_ID` diferente para evitar colisiones.
+
+3. **Iniciar los servicios con Docker**
+```bash
+docker-compose up -d
+```
+
+4. **Ejecutar la semilla de datos** (después de que los contenedores estén corriendo)
+```bash
+docker exec -it url-back-node-url-back-1 node dist/seed/seed.js
+```
+
+¡Listo! La aplicación estará disponible en `http://localhost:3000`
+
+---
+
+#### 📦 Instalación Manual (Sin Docker)
 
 1. **Clonar el repositorio**
 ```bash
@@ -207,10 +265,7 @@ PORT=3000
 # Base de datos
 DATABASE_URL="postgresql://usuario:contraseña@localhost:5432/url_db"
 
-# Para desarrollo con Docker
-POSTGRES_USER=usuario
-POSTGRES_PASSWORD=contraseña
-POSTGRES_DB=url_db
+# Generación de IDs
 MACHINE_ID=1
 
 # JWT
@@ -219,7 +274,7 @@ JWT_SECRET=tu_clave_secreta_muy_segura_aqui
 
 **Importante**: Cada instancia/servidor debe tener un `MACHINE_ID` diferente para evitar colisiones.
 
-4. **Configurar base de datos con Docker (opcional)**
+4. **Configurar base de datos con Docker Compose (opcional)**
 ```bash
 docker-compose -f docker-compose.dev.yml up -d
 ```
@@ -234,7 +289,7 @@ npx prisma migrate deploy
 npx prisma generate
 ```
 
-7. **Poblar base de datos (opcional)**
+7. **Poblar base de datos**
 ```bash
 pnpm seed
 ```
@@ -345,7 +400,11 @@ pnpm start
 
 ## 🐳 Docker
 
-El proyecto incluye configuración Docker para desarrollo:
+El proyecto incluye configuración Docker tanto para desarrollo como para producción.
+
+### 🔧 Desarrollo
+
+Para entorno de desarrollo con hot-reload:
 
 ```bash
 # Iniciar servicios
@@ -357,6 +416,62 @@ docker-compose -f docker-compose.dev.yml down
 # Ver logs
 docker-compose -f docker-compose.dev.yml logs -f
 ```
+
+### 🚀 Producción
+
+#### Requisitos
+- Docker y Docker Compose instalados
+- Archivo `.env` configurado con las variables de entorno
+
+#### Iniciar la aplicación
+
+1. **Construir y levantar los contenedores**
+```bash
+docker-compose up -d
+```
+
+El proceso realizará automáticamente:
+- Instalación de dependencias con pnpm
+- Generación del cliente Prisma
+- Compilación del proyecto TypeScript
+- Ejecución de migraciones de base de datos
+- Inicio del servidor en producción
+
+2. **Ejecutar la semilla de datos** (opcional, después de levantar los contenedores)
+```bash
+docker exec -it url-back-node-url-back-1 node dist/seed/seed.js
+```
+
+Este comando pobla la base de datos con datos iniciales necesarios (roles, permisos, usuario admin, etc.).
+
+#### Comandos útiles
+
+```bash
+# Ver logs del contenedor
+docker-compose logs -f node-url-back
+
+# Detener servicios
+docker-compose down
+
+# Detener y eliminar volúmenes
+docker-compose down -v
+
+# Reconstruir la imagen
+docker-compose build --no-cache
+
+# Ver estado de los contenedores
+docker-compose ps
+```
+
+#### Dockerfile Multi-stage
+
+El proyecto utiliza un Dockerfile optimizado con múltiples etapas:
+- **base**: Imagen base de Node.js con pnpm
+- **dependencies**: Instalación de dependencias
+- **builder**: Compilación del proyecto y generación de Prisma
+- **production**: Imagen final optimizada para producción
+
+Esto garantiza imágenes livianas y eficientes en producción.
 
 ## 📝 Prisma
 
