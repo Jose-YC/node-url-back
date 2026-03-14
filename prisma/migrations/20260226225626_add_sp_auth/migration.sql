@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION fc_RegisterUser(
-    p_user_email VARCHAR(100) DEFAULT NULL,
-    p_user_name TEXT DEFAULT NULL,
-    p_user_password TEXT DEFAULT NULL
+    p_user_email VARCHAR(100),
+    p_user_name TEXT,
+    p_user_password TEXT
 )
 RETURNS TABLE(user_id INTEGER, user_email VARCHAR, user_name TEXT)
 LANGUAGE plpgsql
@@ -28,4 +28,4 @@ EXCEPTION
         RAISE NOTICE 'Error: %', SQLERRM;
         RAISE; 
 END
-$$;
+$$;v
