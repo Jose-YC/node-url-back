@@ -281,12 +281,12 @@ docker-compose -f docker-compose.dev.yml up -d
 
 5. **Ejecutar migraciones**
 ```bash
-npx prisma migrate deploy
+pnpm prisma migrate deploy
 ```
 
 6. **Generar cliente Prisma**
 ```bash
-npx prisma generate
+pnpm prisma generate
 ```
 
 7. **Poblar base de datos**
@@ -479,19 +479,19 @@ Esto garantiza imágenes livianas y eficientes en producción.
 
 ```bash
 # Generar cliente Prisma
-npx prisma generate
+pnpm prisma generate
 
 # Crear nueva migración
-npx prisma migrate dev --name nombre_migracion
+pnpm prisma migrate dev --name nombre_migracion
 
 # Aplicar migraciones
-npx prisma migrate deploy
+pnpm prisma migrate deploy
 
 # Abrir Prisma Studio
-npx prisma studio
+pnpm prisma studio
 
 # Resetear base de datos
-npx prisma migrate reset
+pnpm prisma migrate reset
 ```
 
 ## 🤝 Contribución
